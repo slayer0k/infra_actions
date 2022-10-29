@@ -34,3 +34,5 @@ jobs:
         # запуск проверки проекта по flake8
         python -m flake8
         # все путем
+        cd infra_project/
+        python manage.py test
