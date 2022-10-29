@@ -51,3 +51,20 @@ jobs:
         with:
           push: True
           tags: lust0mania/infra_actions:latest
+  
+  deploy:
+    name: deploying on battle server
+    runs-on: ubuntu-latest
+    needs: build_and_push_to_docker_hub
+    steps:
+      - name: executing remote ssh command to deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          script:
+            sudo docker pull lust0mania/infra_actions
+            sudo docker stop $(sudo docker ps -a -q)
+            sudo docker run --rm -d -p 5000:5000 lust0mania/infra_actions
